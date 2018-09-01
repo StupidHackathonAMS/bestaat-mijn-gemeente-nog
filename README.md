@@ -5,5 +5,6 @@ Uses [data from CBS](https://www.cbs.nl/en-gb/our-services/open-data) and the do
 
 ## running
 
+1. `docker-compose up -d`
 1. `docker exec bmgn_app_1 get_lists.py`
 1. `docker exec bmgn_app_1 diff.py`
