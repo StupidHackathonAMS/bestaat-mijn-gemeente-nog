@@ -1,5 +1,5 @@
 # Packages directly required by the application
-Flask==0.12.2
+flask ~> 0.12.3
 pytz==2017.3
 uWSGI==2.0.15
 PyYAML==3.13
