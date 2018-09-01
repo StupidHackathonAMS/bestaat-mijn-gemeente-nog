@@ -1,0 +1,10 @@
+# Packages directly required by the application
+Flask==0.12.2
+pytz==2017.3
+uWSGI==2.0.15
+PyYAML==3.13
+
+# Dependencies installed by the packages above
+click==6.7
+requests==2.18.4
+urllib3==1.22
