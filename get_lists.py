@@ -17,14 +17,16 @@ def get_possible_lists():
 
 
 def get_gemeenten(link):
-    resp = requests.get('https://dataderden.cbs.nl%s/Gemeenten?$format=json' % (link,))
+    resp = requests.get(
+        'https://dataderden.cbs.nl%s/Gemeenten?$format=json' % (link,))
     if resp.status_code >= 200 and resp.status_code < 300:
         return resp.json()
 
 
 def get_year(link):
     # https://dataderden.cbs.nl/ODataFeed/OData/45001NED/TableInfos?$format=json
-    resp = requests.get('https://dataderden.cbs.nl%s/TableInfos?$format=json' % (link,))
+    resp = requests.get(
+        'https://dataderden.cbs.nl%s/TableInfos?$format=json' % (link,))
     if resp.status_code >= 200 and resp.status_code < 300:
         return resp.json()['value'][0]['Period']
 
