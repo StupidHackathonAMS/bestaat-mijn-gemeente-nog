@@ -64,11 +64,18 @@ def merge(older_year, newer_year, gone, created, new_shapes, old_shapes):
     for old, old_shape in old_shapes:
         if old['code'] not in gone_keys:
             continue
+        was_found = False
         for new, new_shape in new_shapes:
-            if new['code'] not in created_keys:
+            if was_found:
                 continue
-            if new_shape.contains(old_shape):
+            # if new['code'] not in created_keys:
+            #     continue
+            if new_shape.contains(old_shape.representative_point()):
+                was_found = True
                 print("%s -> %s" % (old, new,))
+        if not was_found:
+            print("%s went to unknown" % (old,))
+
 
 def main(argv):
     yearly = {}
