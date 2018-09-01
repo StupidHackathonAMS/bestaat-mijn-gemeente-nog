@@ -57,6 +57,19 @@ def compare(older_year, newer_year, older, newer):
         [n for n in newer['value'] if n['Key'].strip() in added],)
 
 
+def merge(older_year, newer_year, gone, created, new_shapes, old_shapes):
+    print("Merging %s and %s" % (newer_year, older_year,))
+    gone_keys = [g['Key'].strip() for g in gone]
+    created_keys = [c['Key'].strip() for c in created]
+    for old, old_shape in old_shapes:
+        if old['code'] not in gone_keys:
+            continue
+        for new, new_shape in new_shapes:
+            if new['code'] not in created_keys:
+                continue
+            if new_shape.contains(old_shape):
+                print("%s -> %s" % (old, new,))
+
 def main(argv):
     yearly = {}
     for f in glob('cache/*.json'):
@@ -68,10 +81,10 @@ def main(argv):
         if (year - 1) in yearly:
             gone, created = compare(
                 year - 1, year, yearly[year - 1], yearly[year])
-            print("Disappeared:")
-            pprint(gone)
-            print("New:")
-            pprint(created)
+            # print("Disappeared:")
+            # pprint(gone)
+            # print("New:")
+            # pprint(created)
             old_shapes = []
             new_shapes = []
             gg_path = 'grenzen/%s/Gemeentegrenzen.gml' % (year,)
@@ -80,6 +93,10 @@ def main(argv):
             gg_path = 'grenzen/%s/Gemeentegrenzen.gml' % (year - 1,)
             if os.path.exists(gg_path):
                 old_shapes = get_gml_shapes(gg_path)
+            if len(new_shapes) > 0 and len(old_shapes) > 0:
+                merge(
+                    year - 1, year, gone, created, new_shapes,
+                    old_shapes)
     return 0
 
 if __name__ == '__main__':
