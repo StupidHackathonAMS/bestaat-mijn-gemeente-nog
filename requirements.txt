@@ -3,6 +3,7 @@ flask ~> 0.12.3
 pytz==2017.3
 uWSGI==2.0.15
 PyYAML==3.13
+lxml
 
 # Dependencies installed by the packages above
 click==6.7
