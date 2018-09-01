@@ -47,7 +47,7 @@ def get_gml_shapes(gml_file):
 
 
 def compare(older_year, newer_year, older, newer):
-    print("Comparing %s vs %s" % (older_year, newer_year,))
+    # print("Comparing %s vs %s" % (older_year, newer_year,))
     older_keys = {r['Key'].strip() for r in older['value']}
     newer_keys = {r['Key'].strip() for r in newer['value']}
     disappeared = older_keys - newer_keys
@@ -58,9 +58,10 @@ def compare(older_year, newer_year, older, newer):
 
 
 def merge(older_year, newer_year, gone, created, new_shapes, old_shapes):
-    print("Merging %s and %s" % (newer_year, older_year,))
+    # print("Merging %s and %s" % (newer_year, older_year,))
     gone_keys = [g['Key'].strip() for g in gone]
     created_keys = [c['Key'].strip() for c in created]
+    merges = {}
     for old, old_shape in old_shapes:
         if old['code'] not in gone_keys:
             continue
@@ -72,9 +73,11 @@ def merge(older_year, newer_year, gone, created, new_shapes, old_shapes):
             #     continue
             if new_shape.contains(old_shape.representative_point()):
                 was_found = True
-                print("%s -> %s" % (old, new,))
-        if not was_found:
-            print("%s went to unknown" % (old,))
+                # print("%s -> %s" % (old, new,))
+                merges[old['code']] = new['code']
+        # if not was_found:
+        #     print("%s went to unknown" % (old,))
+    return merges
 
 
 def main(argv):
@@ -84,7 +87,11 @@ def main(argv):
         with open(f, 'r') as in_file:
             yearly[year] = json.load(in_file)
 
+    all = {}
     for year in sorted(yearly.keys()):
+        for gem in yearly[year]['value']:
+            if gem['Key'].strip() not in all:
+                all[gem['Key'].strip()] = gem
         if (year - 1) in yearly:
             gone, created = compare(
                 year - 1, year, yearly[year - 1], yearly[year])
@@ -101,9 +108,15 @@ def main(argv):
             if os.path.exists(gg_path):
                 old_shapes = get_gml_shapes(gg_path)
             if len(new_shapes) > 0 and len(old_shapes) > 0:
-                merge(
+                merges = merge(
                     year - 1, year, gone, created, new_shapes,
                     old_shapes)
+                for old, new in merges.items():
+                    try:
+                        all[old]['merges'] += {'code': new, 'year': year}
+                    except LookupError:
+                        all[old]['merges'] = [{'code': new, 'year': year}]
+    print(json.dumps({v['Key'].strip(): v for v in all.values()}))
     return 0
 
 if __name__ == '__main__':
