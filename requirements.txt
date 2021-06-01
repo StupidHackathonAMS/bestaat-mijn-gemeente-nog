@@ -17,6 +17,6 @@ PyYAML==3.13
 requests==2.18.4
 Shapely==1.6.4.post2
 six==1.11.0
-urllib3==1.22
+urllib3==1.26.5
 uWSGI==2.0.15
 Werkzeug==0.14.1
